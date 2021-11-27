@@ -26,7 +26,8 @@ except:
 def motorMove(cm):
     try:
         steps = (float(cm) * 10) * STEPS_IN_ONE_MM
-
+        steps = int(steps)
+        print("Steps %f" % steps)
         # pull enable to low to enable motor
         RPi.GPIO.output(EN_pin, RPi.GPIO.LOW)
         motor.motor_go(False,  # True=Clockwise, False=Counter-Clockwise
