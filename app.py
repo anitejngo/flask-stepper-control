@@ -16,15 +16,20 @@ EN_pin = 24  # enable pin (LOW to enable)
 STEPS_IN_ONE_MM = 19.0375
 
 # Declare a instance of class pass GPIO pins numbers and the motor type
-try:
-    motor = RpiMotorLib.A4988Nema(direction, step, (21, 21, 21), "DRV8825")
-    RPi.GPIO.setup(EN_pin, RPi.GPIO.OUT)  # set enable pin as output
-except:
-    pass
+def setupPINS():
+    try:
+        motor = RpiMotorLib.A4988Nema(direction, step, (21, 21, 21), "DRV8825")
+        RPi.GPIO.setup(EN_pin, RPi.GPIO.OUT)  # set enable pin as output
+    except:
+        pass
+
+def cleanPINS():
+    RPi.GPIO.cleanup()  # clear GPIO allocat
 
 
 def motorMove(cm):
     try:
+        setupPINS()
         steps = (float(cm) * 10) * STEPS_IN_ONE_MM
         steps = int(steps)
         print("Steps %f" % steps)
@@ -36,8 +41,7 @@ def motorMove(cm):
                        .0005,  # step delay [sec]
                        False,  # True = print verbose output
                        .05)  # initial delay [sec]
-
-        RPi.GPIO.cleanup()  # clear GPIO allocat
+        cleanPINS()
     except Exception as E:
         print("FAILED TO MOVE")
         print(E)
