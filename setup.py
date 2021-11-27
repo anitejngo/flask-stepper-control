@@ -3,7 +3,7 @@ from setuptools import setup
 from nvpy import nvpy
 
 setup(
-    name = "flask-stepper-controll",
+    name = "flask-stepper-control",
     version = "1.0",
     author = "Ognjen Lazic",
     author_email = "laogdo@gmail.com",
@@ -11,6 +11,6 @@ setup(
     license = "",
     packages=['app'],
     entry_points = {
-        'console_scripts' : ['app = app.app:main']
+        'console_scripts' : ['flask-stepper-control = app.app:main']
     },
 )
