@@ -11,6 +11,6 @@ setup(
     license = "",
     packages=['app'],
     entry_points = {
-        'console_scripts' : ['fsc = app.app:main']
+        'console_scripts' : ['fsc = app.app']
     },
 )
