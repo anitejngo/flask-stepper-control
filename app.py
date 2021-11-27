@@ -26,7 +26,7 @@ except:
 
 def motorMove(cm, steps_per_mm):
     try:
-        steps = (float(cm) * 10) * steps_per_mm
+        steps = (float(cm) * 10) * int(steps_per_mm)
         steps = int(steps)
         print("Steps %f" % steps)
         # pull enable to low to enable motor
