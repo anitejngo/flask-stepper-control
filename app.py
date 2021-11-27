@@ -16,12 +16,13 @@ EN_pin = 24  # enable pin (LOW to enable)
 STEPS_IN_ONE_MM = 19.0375
 
 # Declare a instance of class pass GPIO pins numbers and the motor type
+try:
+    motor = RpiMotorLib.A4988Nema(direction, step, (21, 21, 21), "DRV8825")
+except:
+    pass
+
 def setupPINS():
-    try:
-        motor = RpiMotorLib.A4988Nema(direction, step, (21, 21, 21), "DRV8825")
-        RPi.GPIO.setup(EN_pin, RPi.GPIO.OUT)  # set enable pin as output
-    except:
-        pass
+    RPi.GPIO.setup(EN_pin, RPi.GPIO.OUT)  # set enable pin as output
 
 def cleanPINS():
     RPi.GPIO.cleanup()  # clear GPIO allocat
