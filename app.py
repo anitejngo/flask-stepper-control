@@ -17,15 +17,15 @@ EN_pin = 24  # enable pin (LOW to enable)
 # Declare a instance of class pass GPIO pins numbers and the motor type
 try:
     motor = RpiMotorLib.A4988Nema(direction, step, (21, 21, 21), "DRV8825")
-    GPIO.setup(EN_pin, GPIO.OUT)  # set enable pin as output
+    RPi.GPIO.setup(EN_pin, RPi.GPIO.OUT)  # set enable pin as output
 except:
     pass
 
 
-
 def motorMove():
     try:
-        GPIO.output(EN_pin, GPIO.LOW)  # pull enable to low to enable motor
+        # pull enable to low to enable motor
+        RPi.GPIO.output(EN_pin, RPi.GPIO.LOW)
         motor.motor_go(False,  # True=Clockwise, False=Counter-Clockwise
                        "Full",  # Step type (Full,Half,1/4,1/8,1/16,1/32)
                        200,  # number of steps
@@ -33,7 +33,7 @@ def motorMove():
                        False,  # True = print verbose output
                        .05)  # initial delay [sec]
 
-        GPIO.cleanup()  # clear GPIO allocat
+        RPi.GPIO.cleanup()  # clear GPIO allocat
     except Exception as E:
         print("FAILED TO MOVE")
         print(E)
