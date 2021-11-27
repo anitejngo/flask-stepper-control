@@ -24,7 +24,7 @@ except:
     pass
 
 
-def motorMove(cm, steps_per_mm=STEPS_PER_MM_DEFAULT):
+def motorMove(cm, steps_per_mm):
     try:
         steps = (float(cm) * 10) * steps_per_mm
         steps = int(steps)
@@ -57,11 +57,17 @@ def main():
 def move():
     data = request.json
     response = {"message", "Error"}
+    steps_per_mm = STEPS_PER_MM_DEFAULT
+    try:
+        steps_per_mm = data['stepsPerMm']
+    except:
+        pass
     try:
         distance_to_move = data['cm']
-        steps_per_mm = data['stepsPerMm']
+
         if distance_to_move:
-            message = "Moved to %s with steps %s" % distance_to_move, steps_per_mm
+            message = "Moved to %s with steps %s" % (
+                distance_to_move, steps_per_mm)
             response = {"message": message}
             if steps_per_mm:
                 motorMove(distance_to_move, steps_per_mm)
