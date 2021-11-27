@@ -13,7 +13,7 @@ import time
 direction = 22  # Direction (DIR) GPIO Pin
 step = 23  # Step GPIO Pin
 EN_pin = 24  # enable pin (LOW to enable)
-STEPS_IN_ONE_MM = 19.0375
+STEPS_PER_MM_DEFAULT = 19.0375
 
 # Declare a instance of class pass GPIO pins numbers and the motor type
 try:
@@ -24,10 +24,9 @@ except:
     pass
 
 
-def motorMove(cm):
+def motorMove(cm, steps_per_mm=STEPS_PER_MM_DEFAULT):
     try:
-
-        steps = (float(cm) * 10) * STEPS_IN_ONE_MM
+        steps = (float(cm) * 10) * steps_per_mm
         steps = int(steps)
         print("Steps %f" % steps)
         # pull enable to low to enable motor
@@ -60,10 +59,14 @@ def move():
     response = {"message", "Error"}
     try:
         distance_to_move = data['cm']
+        steps_per_mm = data['stepsPerMm']
         if distance_to_move:
-            message = "Moving to %s" % distance_to_move
+            message = "Moved to %s with steps %s" % distance_to_move, steps_per_mm
             response = {"message": message}
-            motorMove(distance_to_move)
+            if steps_per_mm:
+                motorMove(distance_to_move, steps_per_mm)
+            else:
+                motorMove(distance_to_move, steps_per_mm)
             return jsonify(response), 200
         else:
             response = {"message", "No cm parameter"}
