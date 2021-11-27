@@ -32,7 +32,8 @@ def motorMove(cm):
         print("Steps %f" % steps)
         # pull enable to low to enable motor
         RPi.GPIO.output(EN_pin, RPi.GPIO.LOW)
-        motor.motor_go(False,  # True=Clockwise, False=Counter-Clockwise
+
+        motor.motor_go(steps > 0,  # True=Clockwise, False=Counter-Clockwise
                        "Full",  # Step type (Full,Half,1/4,1/8,1/16,1/32)
                        steps,  # number of steps
                        .0005,  # step delay [sec]
