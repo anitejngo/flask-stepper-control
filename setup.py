@@ -1,4 +1,6 @@
 import os
+from setuptools import setup
+from nvpy import nvpy
 
 setup(
     name = "flask-stepper-controll",
