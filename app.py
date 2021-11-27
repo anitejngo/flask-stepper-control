@@ -34,7 +34,9 @@ def motorMove():
                        .05)  # initial delay [sec]
 
         GPIO.cleanup()  # clear GPIO allocat
-    except Exception:
+    except Exception as E:
+        print("FAILED TO MOVE")
+        print(E)
         pass
 
 
