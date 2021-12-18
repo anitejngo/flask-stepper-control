@@ -1,48 +1,6 @@
 from flask import Flask, jsonify, request
 
-try:
-    import RPi.GPIO
-except (RuntimeError, ModuleNotFoundError):
-    import fake_rpigpio.utils
-    fake_rpigpio.utils.install()
-
-from RpiMotorLib import RpiMotorLib
-import time
-
-
-direction = 22  # Direction (DIR) GPIO Pin
-step = 23  # Step GPIO Pin
-EN_pin = 24  # enable pin (LOW to enable)
-STEPS_PER_MM_DEFAULT = 19.0375
-
-# Declare a instance of class pass GPIO pins numbers and the motor type
-try:
-    motor = RpiMotorLib.A4988Nema(direction, step, (21, 21, 21), "DRV8825")
-    RPi.GPIO.cleanup()  # clear GPIO allocat
-    RPi.GPIO.setup(EN_pin, RPi.GPIO.OUT)  # set enable pin as output
-except:
-    pass
-
-
-def motorMove(cm, steps_per_mm):
-    try:
-        steps = (float(cm) * 10) * int(steps_per_mm)
-        steps = int(steps)
-        print("Steps %f" % steps)
-        # pull enable to low to enable motor
-        RPi.GPIO.output(EN_pin, RPi.GPIO.LOW)
-
-        motor.motor_go(steps > 0,  # True=Clockwise, False=Counter-Clockwise
-                       "Full",  # Step type (Full,Half,1/4,1/8,1/16,1/32)
-                       abs(steps),  # number of steps
-                       .0005,  # step delay [sec]
-                       False,  # True = print verbose output
-                       .05)  # initial delay [sec]
-    except Exception as E:
-        print("FAILED TO MOVE")
-        print(E)
-        pass
-
+from stepper import STEPS_PER_MM_DEFAULT, motor_move, DEFAULT_STEP_TYPE, is_set_type_valid, DEFAULT_STEP_DELAY
 
 app = Flask(__name__)
 
@@ -56,28 +14,21 @@ def main():
 @app.route('/move', methods=['POST'])
 def move():
     data = request.json
-    response = {"message", "Error"}
-    steps_per_mm = STEPS_PER_MM_DEFAULT
+    steps_per_mm = data.get("stepsPerMm", STEPS_PER_MM_DEFAULT)
+    distance_to_move = data.get("distanceToMove", STEPS_PER_MM_DEFAULT)
+    step_delay = data.get("stepDelay", DEFAULT_STEP_DELAY)
+    step_type = data.get("stepType", DEFAULT_STEP_TYPE)
+    if not is_set_type_valid(step_type):
+        response = {"message": "Step type is not valid"}
+        return jsonify(response), 400
     try:
-        steps_per_mm = data['stepsPerMm']
-    except:
-        pass
-    try:
-        distance_to_move = data['cm']
-
         if distance_to_move:
-            message = "Moved to %s with steps %s" % (
-                distance_to_move, steps_per_mm)
-            response = {"message": message}
-            if steps_per_mm:
-                motorMove(distance_to_move, steps_per_mm)
-            else:
-                motorMove(distance_to_move, steps_per_mm)
+            response = {"message": "Moved to %s with steps %s" % (distance_to_move, steps_per_mm)}
+            motor_move(distance_to_move, steps_per_mm, step_type, step_delay)
             return jsonify(response), 200
         else:
-            response = {"message", "No cm parameter"}
+            response = {"message", "Distance not provided"}
             return jsonify(response), 400
     except Exception as e:
-        message = "Error: %s" % e
-        response = {"message": message}
+        response = {"message": "Error: %s" % e}
         return jsonify(response), 400
