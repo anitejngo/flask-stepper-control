@@ -1,5 +1,4 @@
 from flask import Flask, jsonify, request
-import time
 from stepper import STEPS_PER_MM_DEFAULT, motor_move, DEFAULT_STEP_TYPE, is_set_type_valid, DEFAULT_STEP_DELAY
 
 app = Flask(__name__)
