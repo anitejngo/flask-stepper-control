@@ -17,6 +17,16 @@ DEFAULT_STEP_TYPE = 'Full'
 STEP_TYPES = ['Full', 'Half', "1/4", '1/8', '1/16', '1/32']
 
 DEFAULT_STEP_DELAY = .0005
+DEFAULT_SPEED = 99
+SEED_TO_DELAY_DIFFERENCE = 100000
+
+
+def speed_to_delay(speed):
+    if 1 <= speed <= 99:
+        return speed / SEED_TO_DELAY_DIFFERENCE
+    else:
+        raise Exception('Speed needs to be in limits from 1 to 99')
+
 
 # Declare a instance of class pass GPIO pins numbers and the motor type
 try:
