@@ -23,15 +23,17 @@ def stop():
 
 @app.route('/moving', methods=['POST'])
 def moving():
-    response = None
     global motor_thread
-    if motor_thread:
-        motor_is_moving = motor_thread.is_alive()
-        if motor_is_moving:
+    if motor_thread is not None:
+        if motor_thread.is_alive():
             response = {"message": "Motor is moving"}
+            return jsonify(response), 200
+        else:
+            response = {"message": "Motor is not moving"}
+            return jsonify(response), 200
     else:
         response = {"message": "Motor is not moving"}
-    return jsonify(response), 200
+        return jsonify(response), 200
 
 
 @app.route('/move', methods=['POST'])
