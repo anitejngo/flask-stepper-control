@@ -36,7 +36,7 @@ def move():
                 step_delay = step_delay
 
             response = {"message": "Moved to %s with steps %s" % (distance_to_move, steps_per_mm)}
-            motor_thread = Thread(target=motor_move(distance_to_move, steps_per_mm, step_type, step_delay))
+            motor_thread = Thread(target=lambda x: motor_move(distance_to_move, steps_per_mm, step_type, step_delay))
             motor_thread.start()
             return jsonify(response), 200
         else:
