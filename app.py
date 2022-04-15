@@ -1,8 +1,12 @@
-from flask import Flask, jsonify, request
-from stepper import STEPS_PER_MM_DEFAULT, motor_move, motor_stop, DEFAULT_STEP_TYPE, is_set_type_valid, speed_to_delay
 from threading import Thread
 
+from flask import Flask, jsonify, request
+
+from stepper import STEPS_PER_MM_DEFAULT, motor_move, motor_stop, DEFAULT_STEP_TYPE, is_set_type_valid, speed_to_delay
+
 app = Flask(__name__)
+
+motor_thread = None
 
 
 @app.route("/")
@@ -11,9 +15,13 @@ def main():
     return jsonify(response), 200
 
 
+@app.route('/stop', methods=['POST'])
+def stop():
+    motor_stop()
+
+
 @app.route('/move', methods=['POST'])
 def move():
-    motor_stop()
     data = request.json
     steps_per_mm = data.get("stepsPerMm", STEPS_PER_MM_DEFAULT)
     distance_to_move = data.get("distanceToMove", 0)
