@@ -24,6 +24,7 @@ def stop():
 @app.route('/moving', methods=['POST'])
 def moving():
     response = None
+    global motor_thread
     if motor_thread:
         motor_is_moving = motor_thread.is_alive()
         if motor_is_moving:
