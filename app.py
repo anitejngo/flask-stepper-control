@@ -5,7 +5,7 @@ from stepper import STEPS_PER_MM_DEFAULT, motor_move, motor_stop, DEFAULT_STEP_T
 
 app = Flask(__name__)
 
-motor_thread = None
+global motor_thread
 
 
 @app.route("/")
@@ -18,6 +18,13 @@ def main():
 def stop():
     motor_stop()
     response = {"message": "Motor is stopped"}
+    return jsonify(response), 200
+
+
+@app.route('/moving', methods=['POST'])
+def stop():
+    motor_is_moving = motor_thread.is_alive()
+    response = {"message": "Motor is %r" % motor_is_moving}
     return jsonify(response), 200
 
 
@@ -47,7 +54,9 @@ def move():
                 step_delay = step_delay
 
             response = {"message": "Motor sent to %s with steps %s" % (distance_to_move, steps_per_mm)}
-            motor_thread = Thread(target=lambda: motor_move(distance_to_move, steps_per_mm, step_type, step_delay))
+            global motor_thread
+            motor_thread = Thread(
+                target=lambda: motor_move(distance_to_move, steps_per_mm, step_type, step_delay))
             motor_thread.start()
             return jsonify(response), 200
         else:
