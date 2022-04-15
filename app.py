@@ -18,6 +18,8 @@ def main():
 @app.route('/stop', methods=['POST'])
 def stop():
     motor_stop()
+    response = {"message": "Motor is stopped"}
+    return jsonify(response), 200
 
 
 @app.route('/move', methods=['POST'])
