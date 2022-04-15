@@ -22,7 +22,7 @@ def stop():
 
 
 @app.route('/moving', methods=['POST'])
-def stop():
+def moving():
     motor_is_moving = motor_thread.is_alive()
     response = {"message": "Motor is %r" % motor_is_moving}
     return jsonify(response), 200
