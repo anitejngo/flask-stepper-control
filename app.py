@@ -1,5 +1,5 @@
 from flask import Flask, jsonify, request
-from stepper import STEPS_PER_MM_DEFAULT, motor_move, DEFAULT_STEP_TYPE, is_set_type_valid, speed_to_delay
+from stepper import STEPS_PER_MM_DEFAULT, motor_move, motor_stop, DEFAULT_STEP_TYPE, is_set_type_valid, speed_to_delay
 from threading import Thread
 
 app = Flask(__name__)
@@ -13,6 +13,7 @@ def main():
 
 @app.route('/move', methods=['POST'])
 def move():
+    motor_stop()
     data = request.json
     steps_per_mm = data.get("stepsPerMm", STEPS_PER_MM_DEFAULT)
     distance_to_move = data.get("distanceToMove", 0)
@@ -35,7 +36,7 @@ def move():
             elif step_delay:
                 step_delay = step_delay
 
-            response = {"message": "Moved to %s with steps %s" % (distance_to_move, steps_per_mm)}
+            response = {"message": "Motor sent to %s with steps %s" % (distance_to_move, steps_per_mm)}
             motor_thread = Thread(target=lambda: motor_move(distance_to_move, steps_per_mm, step_type, step_delay))
             motor_thread.start()
             return jsonify(response), 200
