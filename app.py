@@ -1,5 +1,6 @@
 from flask import Flask, jsonify, request
 from stepper import STEPS_PER_MM_DEFAULT, motor_move, DEFAULT_STEP_TYPE, is_set_type_valid, speed_to_delay
+from threading import Thread
 
 app = Flask(__name__)
 
@@ -35,7 +36,7 @@ def move():
                 step_delay = step_delay
 
             response = {"message": "Moved to %s with steps %s" % (distance_to_move, steps_per_mm)}
-            motor_move(distance_to_move, steps_per_mm, step_type, step_delay)
+            Thread(target=motor_move(distance_to_move, steps_per_mm, step_type, step_delay)).start()
             return jsonify(response), 200
         else:
             response = {"message", "Distance not provided"}
