@@ -20,6 +20,9 @@ DEFAULT_STEP_DELAY = .0005
 DEFAULT_SPEED = 99
 SEED_TO_DELAY_DIFFERENCE = 100000
 
+MIN_DELAY = 0.00099
+MAX_DELAY = 0.00001
+
 
 def speed_to_delay(speed):
     if 1 <= speed <= 99:
@@ -40,8 +43,7 @@ except Exception as error:
 
 def motor_move(cm, steps_per_mm, step_type, step_delay):
     try:
-        steps = (float(cm) * 10) * int(steps_per_mm)
-        steps = int(steps)
+        steps = int((float(cm) * 10) * int(steps_per_mm))
         print("Steps %f" % steps)
         # pull enable to low to enable motor
         RPi.GPIO.output(EN_pin, RPi.GPIO.LOW)
