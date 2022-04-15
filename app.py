@@ -1,4 +1,5 @@
 from threading import Thread
+
 from flask import Flask, jsonify, request
 
 from stepper import STEPS_PER_MM_DEFAULT, motor_move, motor_stop, DEFAULT_STEP_TYPE, is_set_type_valid, speed_to_delay
@@ -24,14 +25,14 @@ def stop():
 @app.route('/moving', methods=['POST'])
 def moving():
     global motor_thread
-    if motor_thread is not None:
+    try:
         if motor_thread.is_alive():
             response = {"message": "Motor is moving"}
             return jsonify(response), 200
         else:
             response = {"message": "Motor is not moving"}
             return jsonify(response), 200
-    else:
+    except Exception:
         response = {"message": "Motor is not moving"}
         return jsonify(response), 200
 
