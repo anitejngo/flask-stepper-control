@@ -1,10 +1,12 @@
 from threading import Thread
 
 from flask import Flask, jsonify, request
+from flask_cors import CORS
 
 from stepper import STEPS_PER_MM_DEFAULT, motor_move, motor_stop, DEFAULT_STEP_TYPE, is_set_type_valid, speed_to_delay
 
 app = Flask(__name__)
+CORS(app)
 
 global motor_thread
 
