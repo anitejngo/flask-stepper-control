@@ -37,6 +37,7 @@ Requires=docker.service
 After=docker.service
 
 [Service]
+TimeoutStartSec=0
 ExecStartPre=/usr/bin/docker pull ognjetina/flask-stepper-control:production
 ExecStart=/usr/bin/docker run -a STDOUT --privileged --rm -p 5000:5000 ognjetina/flask-stepper-control:production 
 ExecStop=/usr/bin/docker stop -t 2 ognjetina/flask-stepper-control:production
