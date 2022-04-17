@@ -1,5 +1,4 @@
 from threading import Thread
-import docker
 from flask import Flask, jsonify, request
 from flask_cors import CORS
 
@@ -14,13 +13,7 @@ global motor_thread
 
 @app.route("/")
 def main():
-    response = {"message": "Server is running. Could not get devices IP.", "serverIp": None}
-    try:
-        client = docker.APIClient(base_url='unix://var/run/docker.sock')
-        ip = client.inspect_container('flask-stepper-control')['NetworkSettings']['Networks']['bridge']['IPAddress']
-        response = {"message": "Server is running", "serverIp": ip}
-    except Exception:
-        pass
+    response = {"message": "Server is running"}
     return jsonify(response), 200
 
 
