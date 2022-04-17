@@ -1,4 +1,5 @@
 from threading import Thread
+import socket
 
 from flask import Flask, jsonify, request
 from flask_cors import CORS
@@ -13,7 +14,11 @@ global motor_thread
 
 @app.route("/")
 def main():
-    response = {"message": "server is running"}
+    s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    s.connect(("8.8.8.8", 80))
+    ip = s.getsockname()[0]
+    s.close()
+    response = {"message": "Server is running", "serverIp": ip}
     return jsonify(response), 200
 
 
@@ -24,7 +29,7 @@ def stop():
     return jsonify(response), 200
 
 
-@app.route('/is-moving', methods=['POST'])
+@app.route('/is-moving', methods=['GET'])
 def is_moving():
     global motor_thread
     try:
@@ -32,10 +37,10 @@ def is_moving():
             response = {"message": "Motor is moving", "motorIsMoving": True}
             return jsonify(response), 200
         else:
-            response = {"message": "Motor is not moving", "motorIsMoving": False}
+            response = {"message": "Motor is idle", "motorIsMoving": False}
             return jsonify(response), 200
     except Exception:
-        response = {"message": "Motor is not moving", "motorIsMoving": False}
+        response = {"message": "Motor is idle", "motorIsMoving": False}
         return jsonify(response), 200
 
 
