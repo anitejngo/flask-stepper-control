@@ -6,9 +6,13 @@ Flask api that will control stepper over raspberry pi
 
 ```flask run --host=0.0.0.0```
 
+## Build docker DEV image:
+
+```docker build -t ognjetina/flask-stepper-control:dev .```
+
 ## Run flask from docker
 
-```docker run --privileged -p 5000:5000 ognjetina/flask-stepper-control```
+```docker run --privileged -p 5000:5000 ognjetina/flask-stepper-control:dev```
 
 ### Build docker PRODUCTION image:
 
@@ -38,8 +42,7 @@ After=docker.service
 
 [Service]
 TimeoutStartSec=0
-ExecStartPre=/usr/bin/docker pull ognjetina/flask-stepper-control:production
-ExecStart=/usr/bin/docker run -a STDOUT --privileged --rm -p 5000:5000 ognjetina/flask-stepper-control:production 
+ExecStart=/usr/bin/docker run -a STDOUT --privileged --rm -p 5000:5000 --name flask-stepper-control ognjetina/flask-stepper-control:production 
 ExecStop=/usr/bin/docker stop -t 2 ognjetina/flask-stepper-control:production
 
 [Install]

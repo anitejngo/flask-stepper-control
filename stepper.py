@@ -62,11 +62,12 @@ def motor_move(cm, steps_per_mm, step_type, step_delay):
 
 def motor_stop():
     try:
-        RPi.GPIO.output(EN_pin, RPi.GPIO.LOW)
+        # RPi.GPIO.output(EN_pin, RPi.GPIO.HIGH)
         motor.motor_stop()
     except Exception as E:
-        print("FAILED TO MOVE")
+        print("FAILED TO STOP")
         print(E)
+        pass
 
 
 def is_set_type_valid(step_type):

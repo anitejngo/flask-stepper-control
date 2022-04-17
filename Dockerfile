@@ -19,6 +19,7 @@ RUN pip3 install RPi.GPIO
 RUN pip3 install Flask
 RUN pip3 install rpimotorlib
 RUN pip3 install flask-cors
+RUN pip3 install docker
 
 COPY . /app
 
