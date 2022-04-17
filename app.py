@@ -1,10 +1,11 @@
-from threading import Thread
 import socket
+from threading import Thread
 
 from flask import Flask, jsonify, request
 from flask_cors import CORS
 
-from stepper import STEPS_PER_MM_DEFAULT, motor_move, motor_stop, DEFAULT_STEP_TYPE, is_set_type_valid, speed_to_delay
+from stepper import STEPS_PER_MM_DEFAULT, motor_move, motor_stop, DEFAULT_STEP_TYPE, is_set_type_valid, speed_to_delay, \
+    DEFAULT_STEP_DELAY
 
 app = Flask(__name__)
 CORS(app)
@@ -42,6 +43,17 @@ def is_moving():
     except Exception:
         response = {"message": "Motor is idle", "motorIsMoving": False}
         return jsonify(response), 200
+
+
+@app.route('/move-to-start', methods=['POST'])
+def move_to_start():
+    motor_stop()
+    response = {"message": "Motor sent to 2 m back to root"}
+    global motor_thread
+    motor_thread = Thread(
+        target=lambda: motor_move(-200, STEPS_PER_MM_DEFAULT, DEFAULT_STEP_TYPE, DEFAULT_STEP_DELAY))
+    motor_thread.start()
+    return jsonify(response), 200
 
 
 @app.route('/move', methods=['POST'])
