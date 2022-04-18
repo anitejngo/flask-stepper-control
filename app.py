@@ -1,7 +1,9 @@
 from threading import Thread
+
 from flask import Flask, jsonify, request
 from flask_cors import CORS
 
+from sensor import get_limit_switch_state
 from stepper import STEPS_PER_MM_DEFAULT, motor_move, motor_stop, DEFAULT_STEP_TYPE, is_set_type_valid, speed_to_delay, \
     DEFAULT_STEP_DELAY
 
@@ -17,10 +19,10 @@ def main():
     return jsonify(response), 200
 
 
-@app.route('/stop', methods=['POST'])
-def stop():
-    motor_stop()
-    response = {"message": "Motor is stopped"}
+@app.route('/is-limit-switch-on', methods=['GET'])
+def is_limit_switch_on():
+    limit_switch_state = get_limit_switch_state()
+    response = {"message": "Motor is idle", "isLimitSwitchOn": limit_switch_state}
     return jsonify(response), 200
 
 
@@ -37,6 +39,13 @@ def is_moving():
     except Exception:
         response = {"message": "Motor is idle", "motorIsMoving": False}
         return jsonify(response), 200
+
+
+@app.route('/stop', methods=['POST'])
+def stop():
+    motor_stop()
+    response = {"message": "Motor is stopped"}
+    return jsonify(response), 200
 
 
 @app.route('/move-to-start', methods=['POST'])
