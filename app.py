@@ -22,7 +22,7 @@ def main():
 @app.route('/is-limit-switch-on', methods=['GET'])
 def is_limit_switch_on():
     limit_switch_state = get_limit_switch_state()
-    response = {"message": "Motor is idle", "isLimitSwitchOn": limit_switch_state}
+    response = {"message": "", "isLimitSwitchOn": limit_switch_state}
     return jsonify(response), 200
 
 
