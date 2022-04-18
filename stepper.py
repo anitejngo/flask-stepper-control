@@ -33,8 +33,9 @@ def speed_to_delay(speed):
 
 # Declare a instance of class pass GPIO pins numbers and the motor type
 try:
-    motor = RpiMotorLib.A4988Nema(direction, step, (21, 21, 21), "DRV8825")
+    RPi.GPIO.setmode(RPi.GPIO.BCM)
     RPi.GPIO.setup(EN_pin, RPi.GPIO.OUT)  # set enable pin as output
+    motor = RpiMotorLib.A4988Nema(direction, step, (21, 21, 21), "DRV8825")
 except Exception as error:
     print(error)
     pass

@@ -9,6 +9,7 @@ sensor_pin = 25
 
 # Declare a instance of class pass GPIO pins numbers
 try:
+    RPi.GPIO.setmode(RPi.GPIO.BCM)
     RPi.GPIO.setup(sensor_pin, RPi.GPIO.IN, pull_up_down=RPi.GPIO.PUD_UP)  # set sensor pin as input
 except Exception as error:
     print(error)
