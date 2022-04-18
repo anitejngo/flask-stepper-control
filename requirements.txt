@@ -1,6 +1,6 @@
 autopep8==1.6.0
 click==8.0.3
-fake-rpigpio==0.1.1
+fake-rpi==0.7.1
 Flask==2.0.2
 Flask-Cors==3.0.10
 itsdangerous==2.0.1

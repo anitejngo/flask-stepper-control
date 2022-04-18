@@ -1,20 +1,11 @@
-try:
-    import RPi.GPIO
-except (RuntimeError, ModuleNotFoundError):
-    import fake_rpigpio.utils
-
-    fake_rpigpio.utils.install()
+import RPi.GPIO as GPIO
 
 sensor_pin = 25
 
 # Declare a instance of class pass GPIO pins numbers
-try:
-    RPi.GPIO.setmode(RPi.GPIO.BCM)
-    RPi.GPIO.setup(sensor_pin, RPi.GPIO.IN, pull_up_down=RPi.GPIO.PUD_UP)  # set sensor pin as input
-except Exception as error:
-    print(error)
-    pass
+GPIO.setmode(GPIO.BCM)
+GPIO.setup(sensor_pin, GPIO.IN, pull_up_down=GPIO.PUD_UP)  # set sensor pin as input
 
 
 def get_limit_switch_state():
-    return RPi.GPIO.input(sensor_pin)
+    return GPIO.input(sensor_pin)

@@ -1,10 +1,4 @@
-try:
-    import RPi.GPIO
-except (RuntimeError, ModuleNotFoundError):
-    import fake_rpigpio.utils
-
-    fake_rpigpio.utils.install()
-
+import RPi.GPIO as GPIO
 from RpiMotorLib import RpiMotorLib
 
 direction = 22  # Direction (DIR) GPIO Pin
@@ -32,13 +26,9 @@ def speed_to_delay(speed):
 
 
 # Declare a instance of class pass GPIO pins numbers and the motor type
-try:
-    RPi.GPIO.setmode(RPi.GPIO.BCM)
-    RPi.GPIO.setup(EN_pin, RPi.GPIO.OUT)  # set enable pin as output
-    motor = RpiMotorLib.A4988Nema(direction, step, (21, 21, 21), "DRV8825")
-except Exception as error:
-    print(error)
-    pass
+GPIO.setmode(GPIO.BCM)
+GPIO.setup(EN_pin, GPIO.OUT)  # set enable pin as output
+motor = RpiMotorLib.A4988Nema(direction, step, (21, 21, 21), "DRV8825")
 
 
 def motor_move(cm, steps_per_mm, step_type, step_delay):
@@ -46,7 +36,7 @@ def motor_move(cm, steps_per_mm, step_type, step_delay):
         steps = int((float(cm) * 10) * int(steps_per_mm))
         print("Steps %f" % steps)
         # pull enable to low to enable motor
-        RPi.GPIO.output(EN_pin, RPi.GPIO.LOW)
+        GPIO.output(EN_pin, GPIO.LOW)
 
         motor.motor_go(steps > 0,  # True=Clockwise, False=Counter-Clockwise
                        step_type,  # Step type (Full,Half,1/4,1/8,1/16,1/32)
