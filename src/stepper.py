@@ -93,6 +93,7 @@ class MotorState:
         return self.motor_position is 0 and bool(get_limit_switch_state())
 
     def move_motor_to_distance(self, distance_to_move, steps_per_mm, step_type, step_delay):
+        # move  motor to distance in cm sent from frontend by calculating it in steps and going left or right
         self.is_motor_moving = True
         steps_to_move = int((float(distance_to_move) * 10) * int(steps_per_mm))
         steps_to_move_from_current_position = self.motor_position - steps_to_move
@@ -102,8 +103,16 @@ class MotorState:
         motor_thread.start()
 
     def move_motor_to_start(self):
+        # move motor  back to zero
         self.is_motor_moving = True
-        # 4 meters
+        motor_thread = Thread(
+            target=lambda: move_motor_to_steps(-self.motor_position, DEFAULT_STEP_TYPE, FAST_STEP_DELAY,
+                                               lambda: self.motor_movement_complete(0)))
+        motor_thread.start()
+
+    def move_motor_to_switch(self):
+        # send motor back 4 meters and stop when it gets to limit switch
+        self.is_motor_moving = True
         steps_to_move = int((400 * 10) * int(STEPS_PER_MM_DEFAULT))
         motor_thread = Thread(
             target=lambda: move_motor_to_steps(-steps_to_move, DEFAULT_STEP_TYPE, FAST_STEP_DELAY,

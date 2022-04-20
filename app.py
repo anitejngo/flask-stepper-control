@@ -53,6 +53,17 @@ def move_to_start():
         return jsonify(response), 200
 
 
+@app.route('/move-to-switch', methods=['POST'])
+def move_to_start():
+    if motor_control.is_motor_moving:
+        response = {"message": "Motor is already moving"}
+        return jsonify(response), 409
+    else:
+        response = {"message": "Motor sent back to start"}
+        motor_control.move_motor_to_switch()
+        return jsonify(response), 200
+
+
 @app.route('/move', methods=['POST'])
 def move():
     data = request.json
