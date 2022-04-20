@@ -16,6 +16,7 @@ DEFAULT_STEP_TYPE = 'Full'
 STEP_TYPES = ['Full', 'Half', "1/4", '1/8', '1/16', '1/32']
 
 DEFAULT_STEP_DELAY = .0005
+FAST_STEP_DELAY = 0.00001
 DEFAULT_SPEED = 99
 SEED_TO_DELAY_DIFFERENCE = 100000
 
@@ -72,6 +73,7 @@ def stop_motor():
 def check_start_sensor_to_stop_motor(movement_done):
     while True:
         if bool(get_limit_switch_state()):
+            stop_motor()
             movement_done()
             break
         else:
@@ -104,7 +106,8 @@ class MotorState:
         # 4 meters
         steps_to_move = int((400 * 10) * int(STEPS_PER_MM_DEFAULT))
         motor_thread = Thread(
-            target=lambda: move_motor_to_steps(-steps_to_move, DEFAULT_STEP_TYPE, DEFAULT_STEP_DELAY, None))
+            target=lambda: move_motor_to_steps(-steps_to_move, DEFAULT_STEP_TYPE, FAST_STEP_DELAY,
+                                               lambda: print('MOTOR STOP BY SWITCH')))
         motor_thread.start()
         motor_stop_thread = Thread(
             target=lambda: check_start_sensor_to_stop_motor(lambda: self.motor_movement_complete(0))
