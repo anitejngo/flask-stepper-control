@@ -26,7 +26,7 @@ def main():
     return jsonify(response), 200
 
 
-@app.route('/is-motor-at-start', methods=['GET'])
+@app.route('/is-at-start', methods=['GET'])
 def is_at_start():
     response = {"isMotorAtStart": motor_control.is_motor_at_start()}
     return jsonify(response), 200
