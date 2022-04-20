@@ -28,7 +28,7 @@ def main():
 
 @app.route('/is-motor-at-start', methods=['GET'])
 def is_at_start():
-    response = {"isLimitSwitchOn": motor_control.is_motor_at_start()}
+    response = {"isMotorAtStart": motor_control.is_motor_at_start()}
     return jsonify(response), 200
 
 
