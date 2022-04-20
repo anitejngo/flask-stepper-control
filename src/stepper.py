@@ -103,7 +103,8 @@ class MotorState:
         self.is_motor_moving = True
         # 4 meters
         steps_to_move = int((400 * 10) * int(STEPS_PER_MM_DEFAULT))
-        motor_thread = Thread(target=lambda: move_motor_to_steps(-steps_to_move, DEFAULT_STEP_TYPE, DEFAULT_STEP_DELAY))
+        motor_thread = Thread(
+            target=lambda: move_motor_to_steps(-steps_to_move, DEFAULT_STEP_TYPE, DEFAULT_STEP_DELAY, None))
         motor_thread.start()
         motor_stop_thread = Thread(
             target=lambda: check_start_sensor_to_stop_motor(lambda: self.motor_movement_complete(0))
