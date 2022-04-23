@@ -81,7 +81,7 @@ class MotorState:
         self.is_motor_moving = False
 
     def is_motor_at_start(self):
-        return self.motor_position == 0 and bool(get_limit_switch_state())
+        return self.motor_position == 0 and not bool(get_limit_switch_state())
 
     def move_motor_to_distance(self, distance_to_move):
         # move  motor to distance in cm sent from frontend by calculating it in steps and going left or right
