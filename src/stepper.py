@@ -92,7 +92,8 @@ class MotorState:
             raise Exception('Motor cant got below 0')
         motor_thread = Thread(
             target=lambda: move_motor_to_steps(steps_to_move_from_current_position,
-                                               lambda: self.motor_movement_complete(steps_to_move)))
+                                               lambda: self.motor_movement_complete(
+                                                   steps_to_move_from_current_position)))
         motor_thread.start()
 
     def move_motor_to_start(self):
