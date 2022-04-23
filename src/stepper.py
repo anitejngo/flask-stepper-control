@@ -15,21 +15,12 @@ STEPS_PER_MM_DEFAULT = 19.0375
 DEFAULT_STEP_TYPE = 'Full'
 STEP_TYPES = ['Full', 'Half', "1/4", '1/8', '1/16', '1/32']
 
-DEFAULT_STEP_DELAY = .0005
 FAST_STEP_DELAY = 0.00001
-DEFAULT_SPEED = 99
-SEED_TO_DELAY_DIFFERENCE = 100000
+
+DEFAULT_STEP_DELAY = 0.00008
 
 MIN_DELAY = 0.00099
 MAX_DELAY = 0.00001
-
-
-def speed_to_delay(speed):
-    if 1 <= speed <= 99:
-        return speed / SEED_TO_DELAY_DIFFERENCE
-    else:
-        raise Exception('Speed needs to be in limits from 1 to 99')
-
 
 # Declare a instance of class pass GPIO pins numbers and the motor type
 GPIO.setmode(GPIO.BCM)
@@ -49,7 +40,7 @@ def move_motor_to_steps(steps, movement_done):
         motor.motor_go(steps > 0,  # True=Clockwise, False=Counter-Clockwise
                        DEFAULT_STEP_TYPE,  # Step type (Full,Half,1/4,1/8,1/16,1/32)
                        abs(steps),  # number of steps
-                       STEPS_PER_MM_DEFAULT,  # step delay [sec]
+                       DEFAULT_STEP_DELAY,  # step delay [sec]
                        False,  # True = print verbose output
                        .05)  # initial delay [sec]
         movement_done()
@@ -92,10 +83,10 @@ class MotorState:
     def is_motor_at_start(self):
         return self.motor_position == 0 and bool(get_limit_switch_state())
 
-    def move_motor_to_distance(self, distance_to_move, step_delay):
+    def move_motor_to_distance(self, distance_to_move):
         # move  motor to distance in cm sent from frontend by calculating it in steps and going left or right
         self.is_motor_moving = True
-        steps_to_move = int((float(distance_to_move) * 10) * DEFAULT_STEP_DELAY)
+        steps_to_move = int((float(distance_to_move) * 10) * STEPS_PER_MM_DEFAULT)
         steps_to_move_from_current_position = steps_to_move - int(self.motor_position)
         if steps_to_move_from_current_position < 0:
             raise Exception('Motor cant got below 0')
