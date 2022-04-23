@@ -107,9 +107,9 @@ class MotorState:
     def move_motor_to_switch(self):
         # send motor back 4 meters and stop when it gets to limit switch
         self.is_motor_moving = True
-        steps_to_move = int(400 * STEPS_PER_MM_DEFAULT)
+        steps_to_move = int(4000 * STEPS_PER_MM_DEFAULT)
         motor_thread = Thread(
-            target=lambda: move_motor_to_steps(-steps_to_move, lambda: self.motor_movement_complete(0)))
+            target=lambda: move_motor_to_steps(-steps_to_move, lambda: print('MOTOR STOP BY SWITCH')))
         motor_thread.start()
         motor_stop_thread = Thread(
             target=lambda: check_start_sensor_to_stop_motor(lambda: self.motor_movement_complete(0))
