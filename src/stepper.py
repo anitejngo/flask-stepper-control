@@ -61,9 +61,13 @@ def stop_motor():
         pass
 
 
+def is_motor_at_start():
+    return not bool(get_limit_switch_state())
+
+
 def check_start_sensor_to_stop_motor(movement_done):
     while True:
-        if not bool(get_limit_switch_state()):
+        if is_motor_at_start():
             stop_motor()
             movement_done()
             break
@@ -79,9 +83,6 @@ class MotorState:
     def motor_movement_complete(self, moved_steps):
         self.motor_position = moved_steps
         self.is_motor_moving = False
-
-    def is_motor_at_start(self):
-        return self.motor_position == 0 and not bool(get_limit_switch_state())
 
     def move_motor_to_distance(self, distance_to_move):
         # move  motor to distance in cm sent from frontend by calculating it in steps and going left or right
