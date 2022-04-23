@@ -12,7 +12,7 @@ from flask import Flask, jsonify, request
 from flask_cors import CORS
 
 from src.stepper import MotorState
-from src.stepper import STEPS_PER_MM_DEFAULT, DEFAULT_STEP_TYPE, is_set_type_valid, speed_to_delay, DEFAULT_STEP_DELAY
+from src.stepper import STEPS_PER_MM_DEFAULT, DEFAULT_STEP_TYPE, is_set_type_valid, speed_to_delay
 
 app = Flask(__name__)
 CORS(app)
@@ -54,7 +54,7 @@ def move_to_start():
 
 
 @app.route('/move-to-switch', methods=['POST'])
-def move_to_start():
+def move_to_switch():
     if motor_control.is_motor_moving:
         response = {"message": "Motor is already moving"}
         return jsonify(response), 409
