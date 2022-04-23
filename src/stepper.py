@@ -96,7 +96,10 @@ class MotorState:
         # move  motor to distance in cm sent from frontend by calculating it in steps and going left or right
         self.is_motor_moving = True
         steps_to_move = int((float(distance_to_move) * 10) * int(steps_per_mm))
+        print(steps_to_move, "STEPS TO MOVE")
+        print(self.motor_position, "CURRENT STEP")
         steps_to_move_from_current_position = steps_to_move - int(self.motor_position)
+        print(steps_to_move_from_current_position, "TO GO")
         motor_thread = Thread(
             target=lambda: move_motor_to_steps(steps_to_move_from_current_position, step_type, step_delay,
                                                lambda: self.motor_movement_complete(steps_to_move)))
