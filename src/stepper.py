@@ -12,8 +12,8 @@ EN_pin = 24  # enable pin (LOW to enable)
 
 # Calculated by doing
 # (VALUE_TO_GO / VALUE IT WENT) + STEPS_PER_MM_DEFAULT (get new more accurate step per mm)
-STEPS_PER_MM_DEFAULT = 19.05482
-# STEPS_PER_MM_DEFAULT = 19.0375
+# STEPS_PER_MM_DEFAULT = 19.05482
+STEPS_PER_MM_DEFAULT = 19.0375
 
 DEFAULT_STEP_TYPE = 'Full'
 STEP_TYPES = ['Full', 'Half', "1/4", '1/8', '1/16', '1/32']
