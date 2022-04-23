@@ -77,7 +77,7 @@ def check_start_sensor_to_stop_motor(movement_done):
 
 class MotorState:
     def __init__(self, is_motor_moving):
-        self.motor_position = int(0)
+        self.motor_position = float(0)
         self.is_motor_moving = is_motor_moving
 
     def motor_movement_complete(self, moved_steps):
@@ -87,15 +87,18 @@ class MotorState:
     def move_motor_to_distance(self, distance_to_move):
         # move  motor to distance in cm sent from frontend by calculating it in steps and going left or right
         self.is_motor_moving = True
+
         steps_to_move = int((float(distance_to_move) * 10) * STEPS_PER_MM_DEFAULT)
-        steps_to_move_from_current_position = steps_to_move - int(self.motor_position)
+
+        steps_to_move_from_current_position = int(steps_to_move - float(self.motor_position))
+
         if steps_to_move < 0:
             self.is_motor_moving = False
             raise Exception('Motor cant got below 0')
         motor_thread = Thread(
             target=lambda: move_motor_to_steps(steps_to_move_from_current_position,
                                                lambda: self.motor_movement_complete(
-                                                   steps_to_move_from_current_position)))
+                                                   steps_to_move)))
         motor_thread.start()
 
     def move_motor_to_start(self):

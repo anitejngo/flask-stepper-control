@@ -7,6 +7,7 @@ if platform.system() == 'Darwin':
 
     sys.modules['RPi'] = fake_rpi.RPi  # Fake RPi
     sys.modules['RPi.GPIO'] = fake_rpi.RPi.GPIO  # Fake GPIO
+    fake_rpi.toggle_print(False)
 
 from flask import Flask, jsonify, request
 from flask_cors import CORS
