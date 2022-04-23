@@ -70,6 +70,7 @@ def move():
 
     try:
         if distance_to_move:
+            distance_to_move = float(distance_to_move)
             if motor_control.is_motor_moving:
                 response = {"message": "Motor is already moving"}
                 return jsonify(response), 409
@@ -79,7 +80,7 @@ def move():
                     motor_control.move_motor_to_distance(distance_to_move)
                     return jsonify(response), 200
                 except Exception as e:
-                    return jsonify(e), 200
+                    return jsonify(str(e)), 200
         else:
             response = {"message", "Distance or speed not provided"}
             return jsonify(response), 400

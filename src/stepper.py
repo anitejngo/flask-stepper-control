@@ -88,7 +88,11 @@ class MotorState:
         self.is_motor_moving = True
         steps_to_move = int((float(distance_to_move) * 10) * STEPS_PER_MM_DEFAULT)
         steps_to_move_from_current_position = steps_to_move - int(self.motor_position)
+        print(steps_to_move_from_current_position)
+        print(steps_to_move, "TO MOVE")
+        print(int(self.motor_position), "MOTOR POSITION")
         if steps_to_move_from_current_position < 0:
+            print("CANT MOVE DOWN")
             raise Exception('Motor cant got below 0')
         motor_thread = Thread(
             target=lambda: move_motor_to_steps(steps_to_move_from_current_position,
