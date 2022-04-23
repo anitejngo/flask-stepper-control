@@ -18,6 +18,7 @@ STEP_TYPES = ['Full', 'Half', "1/4", '1/8', '1/16', '1/32']
 FAST_STEP_DELAY = 0.00001
 
 DEFAULT_STEP_DELAY = 0.00006
+DEFAULT_STEP_DELAY_SLOW = 0.00016
 
 MIN_DELAY = 0.00099
 MAX_DELAY = 0.00001
@@ -32,15 +33,14 @@ def is_set_type_valid(step_type):
     return step_type in STEP_TYPES
 
 
-def move_motor_to_steps(steps, movement_done):
+def move_motor_to_steps(steps, movement_done, go_slow=False):
     try:
         # pull enable to low to enable motor
         GPIO.output(EN_pin, GPIO.LOW)
-
         motor.motor_go(steps > 0,  # True=Clockwise, False=Counter-Clockwise
                        DEFAULT_STEP_TYPE,  # Step type (Full,Half,1/4,1/8,1/16,1/32)
                        abs(steps),  # number of steps
-                       DEFAULT_STEP_DELAY,  # step delay [sec]
+                       DEFAULT_STEP_DELAY_SLOW if go_slow else DEFAULT_STEP_DELAY,  # step delay [sec]
                        False,  # True = print verbose output
                        .05)  # initial delay [sec]
         movement_done()
@@ -110,7 +110,7 @@ class MotorState:
         self.is_motor_moving = True
         steps_to_move = int(4000 * STEPS_PER_MM_DEFAULT)
         motor_thread = Thread(
-            target=lambda: move_motor_to_steps(-steps_to_move, lambda: print('MOTOR STOP BY SWITCH')))
+            target=lambda: move_motor_to_steps(-steps_to_move, lambda: print('MOTOR STOP BY SWITCH'), True))
         motor_thread.start()
         motor_stop_thread = Thread(
             target=lambda: check_start_sensor_to_stop_motor(lambda: self.motor_movement_complete(0))

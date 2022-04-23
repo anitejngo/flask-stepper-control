@@ -12,7 +12,6 @@ Flask api that will control stepper over raspberry pi
 
 ## Run flask from docker
 
-c
 ```docker run --privileged -p 5000:5000 ognjetina/flask-stepper-control:dev```
 
 ### Build docker PRODUCTION image:
