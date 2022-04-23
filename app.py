@@ -72,7 +72,7 @@ def move():
     step_type = data.get("stepType", DEFAULT_STEP_TYPE)
 
     speed = data.get("speed", None)
-    step_delay = data.get("stepDelay", DEFAULT_STEP_DELAY)
+    step_delay = data.get("stepDelay", None)
 
     if not is_set_type_valid(step_type):
         response = {"message": "Step type is not valid"}
