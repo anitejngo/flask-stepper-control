@@ -81,8 +81,8 @@ def check_start_sensor_to_stop_motor(movement_done):
 
 
 class MotorState:
-    def __init__(self, motor_position, is_motor_moving):
-        self.motor_position = motor_position
+    def __init__(self, is_motor_moving):
+        self.motor_position = int(0)
         self.is_motor_moving = is_motor_moving
 
     def motor_movement_complete(self, moved_steps):
@@ -90,13 +90,13 @@ class MotorState:
         self.is_motor_moving = False
 
     def is_motor_at_start(self):
-        return self.motor_position is 0 and bool(get_limit_switch_state())
+        return self.motor_position == 0 and bool(get_limit_switch_state())
 
     def move_motor_to_distance(self, distance_to_move, steps_per_mm, step_type, step_delay):
         # move  motor to distance in cm sent from frontend by calculating it in steps and going left or right
         self.is_motor_moving = True
         steps_to_move = int((float(distance_to_move) * 10) * int(steps_per_mm))
-        steps_to_move_from_current_position = steps_to_move - self.motor_position
+        steps_to_move_from_current_position = steps_to_move - int(self.motor_position)
         motor_thread = Thread(
             target=lambda: move_motor_to_steps(steps_to_move_from_current_position, step_type, step_delay,
                                                lambda: self.motor_movement_complete(steps_to_move)))

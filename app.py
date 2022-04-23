@@ -17,7 +17,7 @@ from src.stepper import STEPS_PER_MM_DEFAULT, DEFAULT_STEP_TYPE, is_set_type_val
 app = Flask(__name__)
 CORS(app)
 
-motor_control = MotorState(motor_position=0, is_motor_moving=False)
+motor_control = MotorState(is_motor_moving=False)
 
 
 @app.route("/")
