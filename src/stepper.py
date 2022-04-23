@@ -63,7 +63,7 @@ def stop_motor():
 
 def check_start_sensor_to_stop_motor(movement_done):
     while True:
-        if bool(get_limit_switch_state()):
+        if not bool(get_limit_switch_state()):
             stop_motor()
             movement_done()
             break
