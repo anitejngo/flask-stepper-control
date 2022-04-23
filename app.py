@@ -12,7 +12,7 @@ from flask import Flask, jsonify, request
 from flask_cors import CORS
 
 from src.stepper import MotorState
-from src.stepper import STEPS_PER_MM_DEFAULT, DEFAULT_STEP_TYPE, is_set_type_valid, speed_to_delay
+from src.stepper import DEFAULT_STEP_TYPE, is_set_type_valid, speed_to_delay
 
 app = Flask(__name__)
 CORS(app)
@@ -67,15 +67,10 @@ def move_to_switch():
 @app.route('/move', methods=['POST'])
 def move():
     data = request.json
-    steps_per_mm = data.get("stepsPerMm", STEPS_PER_MM_DEFAULT)
     distance_to_move = data.get("distanceToMove", 0)
-    step_type = data.get("stepType", DEFAULT_STEP_TYPE)
 
     speed = data.get("speed", 8)
 
-    if not is_set_type_valid(step_type):
-        response = {"message": "Step type is not valid"}
-        return jsonify(response), 400
     try:
         if distance_to_move and speed:
             step_delay = speed_to_delay(speed)
@@ -83,9 +78,12 @@ def move():
                 response = {"message": "Motor is already moving"}
                 return jsonify(response), 409
             else:
-                response = {"message": "Motor sent to %s with steps %s" % (distance_to_move, steps_per_mm)}
-                motor_control.move_motor_to_distance(distance_to_move, steps_per_mm, step_type, step_delay)
-                return jsonify(response), 200
+                response = {"message": "Motor sent to %s" % distance_to_move}
+                try:
+                    motor_control.move_motor_to_distance(distance_to_move, step_delay)
+                    return jsonify(response), 200
+                except Exception as e:
+                    return jsonify(e), 200
         else:
             response = {"message", "Distance or speed not provided"}
             return jsonify(response), 400
