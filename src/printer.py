@@ -1,20 +1,20 @@
+from PIL import Image, ImageDraw, ImageFont
 from brother_ql.backends.helpers import send
 from brother_ql.conversion import convert
 from brother_ql.raster import BrotherQLRaster
-from PIL import Image, ImageDraw, ImageFont
 
 
-def print_label_and_description(cut, description):
+def print_label_and_description(cut, cut_description):
     cut = str(cut)
-    description = str(description)
     try:
         filename = 'label.png'
         description_font = ImageFont.truetype('./assets/Lato-Regular.ttf', 46)
         cut_font = ImageFont.truetype('./assets/Lato-Regular.ttf', 68)
         img = Image.new('RGB', (696, 100), color=(255, 255, 255))
         d = ImageDraw.Draw(img)
-        if description:
-            d.text((6, 15), description, font=description_font, fill=(0, 0, 0))
+        if cut_description:
+            cut_description = str(cut_description)
+            d.text((6, 15), cut_description, font=description_font, fill=(0, 0, 0))
             d.text((460, 2), "|" + cut, font=cut_font, fill=(0, 0, 0))
         else:
             d.text((5, 2), cut + 'cm', font=cut_font, fill=(0, 0, 0))

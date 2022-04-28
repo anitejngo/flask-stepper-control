@@ -70,6 +70,7 @@ def move_to_switch():
 def move():
     data = request.json
     distance_to_move = data.get("distanceToMove", None)
+
     should_print = data.get("shouldPrint", None)
     cut_description = data.get("cutDescription", None)
     measure = data.get("measure", None)
