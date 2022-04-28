@@ -72,6 +72,7 @@ def move():
     distance_to_move = data.get("distanceToMove", None)
     should_print = data.get("shouldPrint", None)
     cut_description = data.get("cutDescription", None)
+    measure = data.get("measure", None)
 
     try:
         if distance_to_move:
@@ -84,7 +85,7 @@ def move():
                 try:
                     motor_control.move_motor_to_distance(distance_to_move)
                     if should_print:
-                        print_label_and_description(distance_to_move, cut_description)
+                        print_label_and_description(measure, cut_description)
                     return jsonify(response), 200
                 except Exception as e:
                     return jsonify(str(e)), 200
