@@ -1,4 +1,5 @@
-FROM raspbian/stretch:latest
+#FROM raspbian/stretch:latest
+FROM navikey/raspbian-bullseye:latest
 
 WORKDIR /app
 
@@ -13,8 +14,13 @@ ENV LC_ALL en_US.UTF-8
 
 RUN sudo apt update
 RUN sudo apt install locales python3 python3-pip -y
+RUN sudo apt install libopenjp2-7
+RUN sudo apt install libusb-dev -y
 
 
+RUN pip3 install Pillow
+RUN pip3 install brother_ql
+RUN pip3 install pyusb
 RUN pip3 install RPi.GPIO
 RUN pip3 install Flask
 RUN pip3 install rpimotorlib

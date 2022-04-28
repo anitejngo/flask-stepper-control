@@ -6,44 +6,34 @@ from RpiMotorLib import RpiMotorLib
 
 from src.sensor import get_limit_switch_state
 
-direction = 22  # Direction (DIR) GPIO Pin
-step = 23  # Step GPIO Pin
-EN_pin = 24  # enable pin (LOW to enable)
+DIRECTION_PIN = 22  # Direction (DIR) GPIO Pin
+STEP_PIN = 23  # Step GPIO Pin
+ENABLE_PIN = 24  # enable pin (LOW to enable)
 
-# Calculated by doing
+# Calculated by doing this simple formula
 # (VALUE_TO_GO / VALUE IT WENT) + STEPS_PER_MM_DEFAULT (get new more accurate step per mm)
 # STEPS_PER_MM_DEFAULT = 19.05482
 STEPS_PER_MM_DEFAULT = 19.0375
+DEFAULT_STEP_TYPE = 'Full'  # ['Full', 'Half', "1/4", '1/8', '1/16', '1/32']
 
-DEFAULT_STEP_TYPE = 'Full'
-STEP_TYPES = ['Full', 'Half', "1/4", '1/8', '1/16', '1/32']
-
-FAST_STEP_DELAY = 0.00001
-
+# FAST_STEP_DELAY = 0.00001
 DEFAULT_STEP_DELAY = 0.00006
-DEFAULT_STEP_DELAY_SLOW = 0.00016
-
-MIN_DELAY = 0.00099
-MAX_DELAY = 0.00001
+SLOW_STEP_DELAY = 0.00016
 
 # Declare a instance of class pass GPIO pins numbers and the motor type
 GPIO.setmode(GPIO.BCM)
-GPIO.setup(EN_pin, GPIO.OUT)  # set enable pin as output
-motor = RpiMotorLib.A4988Nema(direction, step, (21, 21, 21), "DRV8825")
-
-
-def is_set_type_valid(step_type):
-    return step_type in STEP_TYPES
+GPIO.setup(ENABLE_PIN, GPIO.OUT)  # set enable pin as output
+motor = RpiMotorLib.A4988Nema(DIRECTION_PIN, STEP_PIN, (21, 21, 21), "DRV8825")
 
 
 def move_motor_to_steps(steps, movement_done, go_slow=False):
     try:
         # pull enable to low to enable motor
-        GPIO.output(EN_pin, GPIO.LOW)
+        GPIO.output(ENABLE_PIN, GPIO.LOW)
         motor.motor_go(steps > 0,  # True=Clockwise, False=Counter-Clockwise
                        DEFAULT_STEP_TYPE,  # Step type (Full,Half,1/4,1/8,1/16,1/32)
                        abs(steps),  # number of steps
-                       DEFAULT_STEP_DELAY_SLOW if go_slow else DEFAULT_STEP_DELAY,  # step delay [sec]
+                       SLOW_STEP_DELAY if go_slow else DEFAULT_STEP_DELAY,  # step delay [sec]
                        False,  # True = print verbose output
                        .05)  # initial delay [sec]
         movement_done()
@@ -56,7 +46,7 @@ def move_motor_to_steps(steps, movement_done, go_slow=False):
 
 def stop_motor():
     try:
-        # RPi.GPIO.output(EN_pin, RPi.GPIO.HIGH)
+        # RPi.GPIO.output(ENABLE_PIN, RPi.GPIO.HIGH)
         motor.motor_stop()
     except Exception as E:
         print("MOTOR FAILED TO STOP")
@@ -83,7 +73,7 @@ class MotorState:
         self.motor_position = float(0)
         self.is_motor_moving = is_motor_moving
 
-    def motor_movement_complete(self, moved_steps):
+    def mark_motor_movement_as_complete(self, moved_steps):
         self.motor_position = moved_steps
         self.is_motor_moving = False
 
@@ -100,7 +90,7 @@ class MotorState:
             raise Exception('Motor cant got below 0')
         motor_thread = Thread(
             target=lambda: move_motor_to_steps(steps_to_move_from_current_position,
-                                               lambda: self.motor_movement_complete(
+                                               lambda: self.mark_motor_movement_as_complete(
                                                    steps_to_move)))
         motor_thread.start()
 
@@ -108,7 +98,7 @@ class MotorState:
         # move motor  back to zero
         self.is_motor_moving = True
         motor_thread = Thread(
-            target=lambda: move_motor_to_steps(-self.motor_position, lambda: self.motor_movement_complete(0)))
+            target=lambda: move_motor_to_steps(-self.motor_position, lambda: self.mark_motor_movement_as_complete(0)))
         motor_thread.start()
 
     def move_motor_to_switch(self):
@@ -119,6 +109,6 @@ class MotorState:
             target=lambda: move_motor_to_steps(-steps_to_move, lambda: print('MOTOR STOP BY SWITCH'), True))
         motor_thread.start()
         motor_stop_thread = Thread(
-            target=lambda: check_start_sensor_to_stop_motor(lambda: self.motor_movement_complete(0))
+            target=lambda: check_start_sensor_to_stop_motor(lambda: self.mark_motor_movement_as_complete(0))
         )
         motor_stop_thread.start()
