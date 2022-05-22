@@ -8,16 +8,14 @@ def print_label_and_description(cut, cut_description):
     cut = str(cut)
     try:
         filename = 'label.png'
-        description_font = ImageFont.truetype('./assets/Lato-Regular.ttf', 46)
-        cut_font = ImageFont.truetype('./assets/Lato-Regular.ttf', 68)
+        font = ImageFont.truetype('./assets/Lato-Regular.ttf', 68)
         img = Image.new('RGB', (696, 100), color=(255, 255, 255))
         d = ImageDraw.Draw(img)
         if cut_description:
             cut_description = str(cut_description)
-            d.text((6, 15), cut_description, font=description_font, fill=(0, 0, 0))
-            d.text((460, 2), "|" + cut, font=cut_font, fill=(0, 0, 0))
+            d.text((12, 6), cut_description + " | " + cut + 'm', font=font, fill=(0, 0, 0))
         else:
-            d.text((5, 2), cut + 'cm', font=cut_font, fill=(0, 0, 0))
+            d.text((12, 6), cut + 'cm', font=font, fill=(0, 0, 0))
 
         img.save('./labelPrint/' + filename)
         print("IMG sent to PRINTER")
